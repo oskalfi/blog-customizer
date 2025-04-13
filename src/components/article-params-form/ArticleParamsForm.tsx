@@ -18,9 +18,13 @@ import { RadioGroup } from 'src/ui/radio-group';
 import { Separator } from 'src/ui/separator';
 import { Text } from 'src/ui/text';
 
+type setFormParamsState = React.Dispatch<
+	React.SetStateAction<typeof defaultArticleState>
+>; // сеттер стейта настроек отображения статьи
+
 type ArticleParamsFormProps = {
 	formParams: typeof defaultArticleState;
-	setCurrentArticleParams: Function;
+	setCurrentArticleParams: setFormParamsState;
 };
 
 export const ArticleParamsForm = ({
@@ -37,9 +41,7 @@ export const ArticleParamsForm = ({
 		setCurrentArticleParams(usersFormParams);
 	};
 
-	const handleResetFormParameters = (
-		event: React.FormEvent<HTMLFormElement>
-	) => {
+	const handleResetFormParameters = () => {
 		setCurrentArticleParams(defaultArticleState);
 		setUsersFormParams(defaultArticleState);
 	};
@@ -77,8 +79,8 @@ export const ArticleParamsForm = ({
 					onSubmit={(event) => {
 						handleSubmitFormParameters(event);
 					}}
-					onReset={(event) => {
-						handleResetFormParameters(event);
+					onReset={() => {
+						handleResetFormParameters();
 					}}>
 					<Text as='h2' size={31} weight={800} uppercase dynamicLite>
 						Задайте параметры
