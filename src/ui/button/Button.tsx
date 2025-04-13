@@ -11,7 +11,7 @@ export const Button = ({
 	type,
 }: {
 	title: string;
-	onClick?: (e: SyntheticEvent) => void;
+	onClick?: (event: SyntheticEvent) => void;
 	htmlType?: React.ButtonHTMLAttributes<HTMLButtonElement>['type'];
 	type: 'apply' | 'clear';
 }) => {

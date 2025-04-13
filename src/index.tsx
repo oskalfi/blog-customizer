@@ -13,12 +13,11 @@ const domNode = document.getElementById('root') as HTMLDivElement;
 const root = createRoot(domNode);
 
 const App = () => {
-	const [paramsFormIsOpen, setParamsFormIsOpen] = useState(false);
 	const [currentArticleState, setCurrentArticleState] =
 		useState(defaultArticleState);
 	return (
 		<main
-			className={clsx(styles.main)}
+			className={styles.main}
 			style={
 				{
 					'--font-family': currentArticleState.fontFamilyOption.value,
@@ -29,10 +28,8 @@ const App = () => {
 				} as CSSProperties
 			}>
 			<ArticleParamsForm
-				isOpen={paramsFormIsOpen}
-				toggleIsOpenState={setParamsFormIsOpen}
 				formParams={currentArticleState}
-				setFormParams={setCurrentArticleState}
+				setCurrentArticleParams={setCurrentArticleState}
 			/>
 			<Article />
 		</main>

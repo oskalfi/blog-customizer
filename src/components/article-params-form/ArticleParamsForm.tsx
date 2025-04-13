@@ -10,26 +10,57 @@ import {
 	fontColors,
 	fontFamilyOptions,
 	fontSizeOptions,
+	OptionType,
 } from 'src/constants/articleProps';
 import { Select } from 'src/ui/select';
-import { SyntheticEvent, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { RadioGroup } from 'src/ui/radio-group';
 import { Separator } from 'src/ui/separator';
+import { Text } from 'src/ui/text';
 
 type ArticleParamsFormProps = {
-	isOpen: boolean;
-	toggleIsOpenState: Function;
 	formParams: typeof defaultArticleState;
-	setFormParams: Function;
+	setCurrentArticleParams: Function;
 };
 
 export const ArticleParamsForm = ({
-	isOpen,
-	toggleIsOpenState,
 	formParams,
-	setFormParams,
+	setCurrentArticleParams,
 }: ArticleParamsFormProps) => {
-	const [changedFormParams, setChangedFormParams] = useState(formParams);
+	const [isOpen, toggleIsOpenState] = useState(false);
+	const [usersFormParams, setUsersFormParams] = useState(formParams);
+
+	const handleSubmitFormParameters = (
+		event: React.FormEvent<HTMLFormElement>
+	) => {
+		event.preventDefault();
+		setCurrentArticleParams(usersFormParams);
+	};
+
+	const handleResetFormParameters = (
+		event: React.FormEvent<HTMLFormElement>
+	) => {
+		setCurrentArticleParams(defaultArticleState);
+		setUsersFormParams(defaultArticleState);
+	};
+
+	const sidebarRef = useRef<HTMLElement | null>(null);
+
+	useEffect(() => {
+		const handleClickOutsideSidebar = (event: MouseEvent) => {
+			if (
+				sidebarRef.current &&
+				!sidebarRef.current.contains(event.target as Node) &&
+				isOpen
+			)
+				toggleIsOpenState(!isOpen);
+		};
+		document.addEventListener('mousedown', handleClickOutsideSidebar);
+		return () => {
+			document.removeEventListener('mousedown', handleClickOutsideSidebar);
+		};
+	}, [isOpen]);
+
 	return (
 		<>
 			<ArrowButton
@@ -39,63 +70,73 @@ export const ArticleParamsForm = ({
 				}}
 			/>
 			<aside
-				className={
-					isOpen
-						? clsx(styles.container, styles.container_open)
-						: styles.container
-				}>
-				<form className={styles.form}>
+				className={clsx(styles.container, isOpen && styles.container_open)}
+				ref={sidebarRef}>
+				<form
+					className={styles.form}
+					onSubmit={(event) => {
+						handleSubmitFormParameters(event);
+					}}
+					onReset={(event) => {
+						handleResetFormParameters(event);
+					}}>
+					<Text as='h2' size={31} weight={800} uppercase dynamicLite>
+						Задайте параметры
+					</Text>
 					<Select
 						title={'Шрифт'}
-						selected={changedFormParams.fontFamilyOption}
+						selected={usersFormParams.fontFamilyOption}
 						options={fontFamilyOptions}
-						onChange={(e) => {
-							setChangedFormParams({
-								...changedFormParams,
-								fontFamilyOption: e,
+						onChange={(option: OptionType) => {
+							setUsersFormParams({
+								...usersFormParams,
+								fontFamilyOption: option,
 							});
 						}}
 					/>
 					<RadioGroup
 						title={'Размер шрифта'}
-						selected={changedFormParams.fontSizeOption}
+						selected={usersFormParams.fontSizeOption}
 						options={fontSizeOptions}
 						name={'font-size-radio'}
-						onChange={(e) => {
-							setChangedFormParams({ ...changedFormParams, fontSizeOption: e });
+						onChange={(option: OptionType) => {
+							setUsersFormParams({
+								...usersFormParams,
+								fontSizeOption: option,
+							});
 						}}
 					/>
 					<Select
 						title={'Цвет шрифта'}
-						selected={changedFormParams.fontColor}
+						selected={usersFormParams.fontColor}
 						options={fontColors}
-						onChange={(e) => {
-							setChangedFormParams({
-								...changedFormParams,
-								fontColor: e,
+						onChange={(option: OptionType) => {
+							setUsersFormParams({
+								...usersFormParams,
+								fontColor: option,
 							});
 						}}
 					/>
 					<Separator />
 					<Select
 						title={'Цвет фона'}
-						selected={changedFormParams.backgroundColor}
+						selected={usersFormParams.backgroundColor}
 						options={backgroundColors}
-						onChange={(e) => {
-							setChangedFormParams({
-								...changedFormParams,
-								backgroundColor: e,
+						onChange={(option: OptionType) => {
+							setUsersFormParams({
+								...usersFormParams,
+								backgroundColor: option,
 							});
 						}}
 					/>
 					<Select
 						title={'Ширина контента'}
-						selected={changedFormParams.contentWidth}
+						selected={usersFormParams.contentWidth}
 						options={contentWidthArr}
-						onChange={(e) => {
-							setChangedFormParams({
-								...changedFormParams,
-								contentWidth: e,
+						onChange={(option: OptionType) => {
+							setUsersFormParams({
+								...usersFormParams,
+								contentWidth: option,
 							});
 						}}
 					/>
@@ -104,20 +145,13 @@ export const ArticleParamsForm = ({
 							title='Сбросить'
 							htmlType='reset'
 							type='clear'
-							onClick={(e: SyntheticEvent) => {
-								e.preventDefault();
-								setFormParams(defaultArticleState);
-								setChangedFormParams(defaultArticleState);
-							}}
+							onClick={() => {}}
 						/>
 						<Button
 							title='Применить'
 							htmlType='submit'
 							type='apply'
-							onClick={(e: SyntheticEvent) => {
-								e.preventDefault();
-								setFormParams(changedFormParams);
-							}}
+							onClick={() => {}}
 						/>
 					</div>
 				</form>
