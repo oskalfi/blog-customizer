@@ -47,6 +47,7 @@ export const ArticleParamsForm = ({
 	const sidebarRef = useRef<HTMLElement | null>(null);
 
 	useEffect(() => {
+		if (!isOpen) return;
 		const handleClickOutsideSidebar = (event: MouseEvent) => {
 			if (
 				sidebarRef.current &&
@@ -55,8 +56,7 @@ export const ArticleParamsForm = ({
 			)
 				setIsOpenState(!isOpen);
 		};
-		if (isOpen)
-			document.addEventListener('mousedown', handleClickOutsideSidebar);
+		document.addEventListener('mousedown', handleClickOutsideSidebar);
 		return () => {
 			document.removeEventListener('mousedown', handleClickOutsideSidebar);
 		};
