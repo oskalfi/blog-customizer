@@ -31,20 +31,18 @@ export const ArticleParamsForm = ({
 	formParams,
 	setCurrentArticleParams,
 }: ArticleParamsFormProps) => {
-	const [isOpen, toggleIsOpenState] = useState(false);
+	const [isOpen, setIsOpenState] = useState(false);
 	const [usersFormParams, setUsersFormParams] = useState(formParams);
 
-	const handleSubmitFormParameters = (
-		event: React.FormEvent<HTMLFormElement>
-	) => {
+	function handleSubmitFormParameters(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault();
 		setCurrentArticleParams(usersFormParams);
-	};
+	}
 
-	const handleResetFormParameters = () => {
+	function handleResetFormParameters() {
 		setCurrentArticleParams(defaultArticleState);
 		setUsersFormParams(defaultArticleState);
-	};
+	}
 
 	const sidebarRef = useRef<HTMLElement | null>(null);
 
@@ -55,9 +53,10 @@ export const ArticleParamsForm = ({
 				!sidebarRef.current.contains(event.target as Node) &&
 				isOpen
 			)
-				toggleIsOpenState(!isOpen);
+				setIsOpenState(!isOpen);
 		};
-		document.addEventListener('mousedown', handleClickOutsideSidebar);
+		if (isOpen)
+			document.addEventListener('mousedown', handleClickOutsideSidebar);
 		return () => {
 			document.removeEventListener('mousedown', handleClickOutsideSidebar);
 		};
@@ -68,7 +67,7 @@ export const ArticleParamsForm = ({
 			<ArrowButton
 				isOpen={isOpen}
 				onClick={() => {
-					toggleIsOpenState(!isOpen);
+					setIsOpenState(!isOpen);
 				}}
 			/>
 			<aside
@@ -82,7 +81,7 @@ export const ArticleParamsForm = ({
 					onReset={() => {
 						handleResetFormParameters();
 					}}>
-					<Text as='h2' size={31} weight={800} uppercase dynamicLite>
+					<Text as='h2' size={31} weight={800} uppercase>
 						Задайте параметры
 					</Text>
 					<Select
@@ -143,18 +142,8 @@ export const ArticleParamsForm = ({
 						}}
 					/>
 					<div className={styles.bottomContainer}>
-						<Button
-							title='Сбросить'
-							htmlType='reset'
-							type='clear'
-							onClick={() => {}}
-						/>
-						<Button
-							title='Применить'
-							htmlType='submit'
-							type='apply'
-							onClick={() => {}}
-						/>
+						<Button title='Сбросить' htmlType='reset' type='clear' />
+						<Button title='Применить' htmlType='submit' type='apply' />
 					</div>
 				</form>
 			</aside>
